@@ -35,4 +35,9 @@ contract AdvancedCollectible is ERC721, VRFConsumerBase {
         keyhash = _keyhash;
         fee = _fee;
     }
+
+    function createCollectible() public returns (bytes32) {
+        bytes32 requestId = requestRandomness(keyhash, fee);
+        requestIdToSender[requestId] = msg.sender;
+    }
 }
