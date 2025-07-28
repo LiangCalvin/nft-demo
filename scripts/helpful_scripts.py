@@ -13,6 +13,8 @@ from brownie import LinkToken
 FORKED_LOCAL_ENVIRONMENTS = ["mainnet-fork", "mainnet-fork-dev"]
 LOCAL_BLOCKCHAIN_ENVIRONMENTS = ["development", "ganache-local"]
 OPENSEA_URL = "https://testnets.opensea.io/assets/{}/{}"
+DECIMALS = 8
+INITIAL_VALUE = 200000000000
 
 contract_to_mock = {
     # "eth_usd_price_feed": MockV3Aggregator,  # Mock ETH/USD price feed
@@ -64,10 +66,6 @@ def get_contract(contract_name):
     return contract
 
 
-DECIMALS = 8
-INITIAL_VALUE = 200000000000
-
-
 def deploy_mocks(decimals=DECIMALS, initial_value=INITIAL_VALUE):
     print(f"The active network is {network.show_active()}")
     print("Deploying Mocks...")
@@ -85,3 +83,14 @@ def deploy_mocks(decimals=DECIMALS, initial_value=INITIAL_VALUE):
 
     print("Deploying Mock VRFCoordinator...")
     print("Mocks Deployed!")
+
+
+def fund_with_link(
+    contract_address, account=None, link_token=None, amount=100000000000000000
+):
+    account = account if account else get_account()
+    link_token = link_token if link_token else get_contract("link_token")
+    tx = link_token.transfer(contract_address, amount, {"from": account})
+    tx.wait(1)
+    print("Funded contract with LINK!")
+    return tx
