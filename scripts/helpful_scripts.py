@@ -93,4 +93,5 @@ def fund_with_link(
     tx = link_token.transfer(contract_address, amount, {"from": account})
     tx.wait(1)
     print("Funded contract with LINK!")
+    print(f"Funded {contract_address}")
     return tx
