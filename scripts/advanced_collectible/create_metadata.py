@@ -39,7 +39,8 @@ def main():
             collectible_metadata["image"] = image_uri
             with open(metadata_file_name, "w") as file:
                 json.dump(collectible_metadata, file)
-            upload_to_ipfs(metadata_file_name)
+            if os.getenv("UPLOAD_IPFS") == "true":
+                upload_to_ipfs(metadata_file_name)
 
 
 # curl -X POST -F file=@metadata/sepolia/0-SHIBA_INU.json http://localhost:5001/api/v0/add
