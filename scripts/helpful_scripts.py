@@ -14,14 +14,9 @@ from metadata.sample_metadata import metadata_template
 FORKED_LOCAL_ENVIRONMENTS = ["mainnet-fork", "mainnet-fork-dev"]
 LOCAL_BLOCKCHAIN_ENVIRONMENTS = ["development", "ganache-local"]
 OPENSEA_URL = "https://testnets.opensea.io/assets/{}/{}"
-DECIMALS = 8
-INITIAL_VALUE = 200000000000
+# DECIMALS = 8
+# INITIAL_VALUE = 200000000000
 
-contract_to_mock = {
-    # "eth_usd_price_feed": MockV3Aggregator,  # Mock ETH/USD price feed
-    "vrf_coordinator": VRFCoordinatorMock,  # Mock VRF Coordinator
-    "link_token": LinkToken,  # Mock LINK token
-}
 
 BREED_MAPPING = {0: "PUG", 1: "SHIBA_INU", 2: "ST_BERNARD"}
 
@@ -41,6 +36,13 @@ def get_account(index=None, id=None):
     ):
         return accounts[0]
     return accounts.add(config["wallets"]["from_key"])
+
+
+contract_to_mock = {
+    # "eth_usd_price_feed": MockV3Aggregator,  # Mock ETH/USD price feed
+    "vrf_coordinator": VRFCoordinatorMock,  # Mock VRF Coordinator
+    "link_token": LinkToken,  # Mock LINK token
+}
 
 
 def get_contract(contract_name):
@@ -73,23 +75,38 @@ def get_contract(contract_name):
     return contract
 
 
-def deploy_mocks(decimals=DECIMALS, initial_value=INITIAL_VALUE):
-    print(f"The active network is {network.show_active()}")
-    print("Deploying Mocks...")
-    account = get_account()
-    print("Deploying Mock Link Token...")
-    # MockV3Aggregator.deploy(decimals, initial_value, {"from": account})
-    link_token = LinkToken.deploy({"from": account})
-    print("Deploying Mock Price Feed...")
-    mock_price_feed = MockV3Aggregator.deploy(
-        decimals, initial_value, {"from": account}
-    )
-    print(f"Deployed to {mock_price_feed.address}")
-    print("Deploying Mock VRFCoordinator...")
-    vrf_coordinator = VRFCoordinatorMock.deploy(link_token.address, {"from": account})
+# def deploy_mocks(decimals=DECIMALS, initial_value=INITIAL_VALUE):
+#     print(f"The active network is {network.show_active()}")
+#     print("Deploying Mocks...")
+#     account = get_account()
+#     print("Deploying Mock Link Token...")
+#     # MockV3Aggregator.deploy(decimals, initial_value, {"from": account})
+#     link_token = LinkToken.deploy({"from": account})
+#     print("Deploying Mock Price Feed...")
+#     mock_price_feed = MockV3Aggregator.deploy(
+#         decimals, initial_value, {"from": account}
+#     )
+#     print(f"Deployed to {mock_price_feed.address}")
+#     print("Deploying Mock VRFCoordinator...")
+#     vrf_coordinator = VRFCoordinatorMock.deploy(link_token.address, {"from": account})
 
-    print("Deploying Mock VRFCoordinator...")
-    print("Mocks Deployed!")
+
+#     print("Deploying Mock VRFCoordinator...")
+#     print("Mocks Deployed!")
+def deploy_mocks():
+    """
+    Use this script if you want to deploy mocks to a testnet
+    """
+    print(f"The active network is {network.show_active()}")
+    print("Deploying mocks...")
+    account = get_account()
+    print("Deploying Mock LinkToken...")
+    link_token = LinkToken.deploy({"from": account})
+    print(f"Link Token deployed to {link_token.address}")
+    print("Deploying Mock VRF Coordinator...")
+    vrf_coordinator = VRFCoordinatorMock.deploy(link_token.address, {"from": account})
+    print(f"VRFCoordinator deployed to {vrf_coordinator.address}")
+    print("All done!")
 
 
 def fund_with_link(
